@@ -1,7 +1,11 @@
-from flask import Flask, request, session, redirect, url_for, escape
+# imports
+from flask import Flask, request, session, redirect, url_for, escape, jsonify
 from users import *
-app = Flask(__name__)
+import tutortimes
 
+
+# initializes the flask app
+app = Flask(__name__)
 app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 
 
@@ -22,47 +26,69 @@ def home():
     return msg
 
 @app.route("/register", methods=['POST'])
-def new_user():
+def register():
     """() -> str
     Creates a new user
     """
 
-    # get username and password from the form
-    username = request.form['username']
-
-    # TODO: encrypt password
+    # get fields from form
+    email = request.form['email']
+    name = request.form['name']
     password = request.form['password']
+    user_type = request.form['user_type']
 
     # create a new user object
+    new_user = User(name, email, password, user_type)
 
+    # add the user to TutorTimes
+    tutortimes.add_user(new_user)
 
     # returns the success message
-    return "User is now registered as {}".format(username)
+    return jsonify("User is now registered as {}".format(email))
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    """() -> redirect
-    Logs in a user to the system
+    """() -> NoneType
+    Logs in a user by giving them a session
     """
     # check if it is a post method
     if request.method == "POST":
 
-        # get the username in the field
-        username = request.form['username']
+        # get the email in the field
+        email = request.form['email']
+
 
         # get the password in the field
         password = request.form['password']
 
 
-        # if the password matches the one in the database
+        # CASE 1: User is registered
+        if tutortimes.is_registered(email):
 
-        # initiate a session
-        session['username'] = username
+            # obtain their user object
+            login_user = tutortimes.get_user(email)
 
-    # redirect them back to home
-    # TODO: make this redirect somewhere else
-    return redirect(url_for('home'))
+            # If password matches
+            if password == login_user.check_password(password):
+
+                # Initiate a session for them
+                # initiate a session
+                session['email'] = email
+
+            # If password does not match
+            else:
+
+                # do something
+                print("passwords do not match")
+
+        # CASE 2: User is not registered
+        else:
+
+            # redirect them
+            print("user does not exist in database")
+
+    # return redirect(url_for('home'))
 
 
 @app.route("/logout")

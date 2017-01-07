@@ -2,15 +2,28 @@ from werkzeug.security import generate_password_hash, \
      check_password_hash
 
 
-class User():
+class User:
     """ A class representing users in the system"""
 
-    def __init__(self, username, password):
-        """ (User, str, str) -> NoneType
-        Inits the user with username and password.
+    def __init__(self, name, email, password, user_type):
+        """ (User, str, str, str, str) -> NoneType
+        Inits the user given name, email, password and user type.
         """
-        self.username = username
+        self._name = name
+        self._email = email
         self.set_password(password)
+
+    def __str__(self):
+        """ (Users) -> str
+        Returns the email of the user
+        """
+        return self._email
+
+    def get_name(self):
+        """ (User) -> str
+        Returns the full name of the user
+        """
+        return self._name
 
     def set_password(self, password):
         """ (User, str) -> str
@@ -23,3 +36,9 @@ class User():
         it matches
         """
         return check_password_hash(self.pw_hash, password)
+
+    def get_email(self):
+        """ (User) -> str
+        Returns the email of the user
+        """
+        return self._email
