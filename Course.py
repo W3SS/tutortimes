@@ -2,7 +2,8 @@ from thread import *
 import time
 from users import *
 DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday']
-class Course(object,Event):
+
+class Course(object):
     '''
     A class to represent a course including the students and timetable
     '''
@@ -53,7 +54,6 @@ class Course(object,Event):
     def get_name():
         return self._name
 
-    
 class Event:
     
     def __init__(self, start_time, end_time, room, name):
