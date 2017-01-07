@@ -8,94 +8,111 @@ import tutortimes
 app = Flask(__name__)
 app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 
+# create a tutortimes object
+server = tutortimes.TutorTimes()
 
 @app.route("/")
 def home():
     """() -> str
-    Return whether or not they are logged in or not.
-
+    The main page for Tutor Times
     """
-    # if the person is in the session, then show they are logged in
-    if 'username' in session:
-        msg = "You are logged in as {}".format(escape(session['username']))
-    # if the person is not logged in, show they are not logged in
-    else:
-        msg = "You are not logged in yet."
+    return "Welcome to Tutor Times"
 
-    # return the msg
-    return msg
 
-@app.route("/register", methods=['POST'])
+@app.route("/api/register", methods=['POST'])
 def register():
-    """() -> str
+    """() -> json
     Creates a new user
     """
+    json_data = request.json
 
     # get fields from form
-    email = request.form['email']
-    name = request.form['name']
-    password = request.form['password']
-    user_type = request.form['user_type']
+    email = json_data['email']
+    name = json_data['name']
+    password = json_data['password']
+    user_type = json_data['user_type']
 
-    # create a new user object
-    new_user = User(name, email, password, user_type)
+    # if the user email is not registered yet
+    if server.get_user(email) is None:
 
-    # add the user to TutorTimes
-    tutortimes.add_user(new_user)
+        # create a new user object
+        new_user = User(name, email, password, user_type)
+
+        # add the user to TutorTimes
+        server.add_user(new_user)
+
+        status = "success"
+
+    # else do not allow them to register
+    else:
+        status = "User email already exists in database"
 
     # returns the success message
-    return jsonify("User is now registered as {}".format(email))
+    return jsonify({'result': status})
 
 
-@app.route("/login", methods=['POST'])
+@app.route("/api/login", methods=['POST'])
 def login():
-    """() -> NoneType
+    """() -> json
     Logs in a user by giving them a session
     """
+
+    json_data = request.json
+
     # check if it is a post method
     if request.method == "POST":
 
         # get the email in the field
-        email = request.form['email']
+        email = json_data['email']
 
 
         # get the password in the field
-        password = request.form['password']
-
+        password = json_data['password']
 
         # CASE 1: User is registered
-        if tutortimes.is_registered(email):
+        if server.get_user(email) is not None:
 
             # obtain their user object
-            login_user = tutortimes.get_user(email)
+            login_user = server.get_user(email)
 
             # If password matches
-            if password == login_user.check_password(password):
+            if login_user.check_password(password):
 
                 # Initiate a session for them
                 # initiate a session
                 session['email'] = email
+                status = "success"
 
             # If password does not match
             else:
 
                 # do something
-                print("passwords do not match")
+                status = "passwords do not match"
 
         # CASE 2: User is not registered
         else:
+            status = "user does not exist in database"
 
-            # redirect them
-            print("user does not exist in database")
-
-    # return redirect(url_for('home'))
+    return jsonify({'result': status})
 
 
-@app.route("/logout")
+@app.route('/api/notify')
+def notify():
+    """() -> json
+    Notifies users by push notifications
+    """
+    pass
+
+
+
+@app.route('/api/logout')
 def logout():
-    """Logs out the user and removes them from the session"""
-    session.pop('username', None)
-    return redirect(url_for('home'))
+    """() -> json
+    Logs out the user and removes them from the session
+    """
+    session.pop('logged_in', None)
+    return jsonify({'result': 'success'})
+
 
 if __name__ == "__main__":
     app.run()

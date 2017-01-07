@@ -1,0 +1,4 @@
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"name": "cho", "email": "a@a.com", "password": "hello", "user_type": "admin"}' http://localhost:5000/api/register
+
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email": "a@a.com", "password": "hello"}' http://localhost:5000/api/login
