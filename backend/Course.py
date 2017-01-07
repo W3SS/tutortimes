@@ -36,10 +36,10 @@ class Course(object,Event):
     def add_event(self,day,event):
         
         self._monitor.set()
-        self._timetable[day].add(event)
+        self._events.add(event)
 
     def remove_event(self,day,event):
-        self._timetable[day].difference_update(set(event))
+        self._events.difference_update(set(event))
         self._last_event = event
         self._monitor.set()
 
@@ -48,7 +48,10 @@ class Course(object,Event):
     
     def notify(self,message):
         self._tutor_times.notify(students,message)
-        
+    
+    def get_events():
+        return self._events()       
+    
 class Event:
     
     def __init__(self, start_time, end_time, room, name):
@@ -69,11 +72,11 @@ class Event:
         
     def edit_end(self,new_time):
         self._end = new_time
-        
-    def get_events():
-        return self._events()
-    
+
     def during_event(self):
+        '''
+        checks wether the current time is in the middle of an event
+        '''
         curr_time = int(round(time.time() * 1000))
         output = False
         if(self._start <= curr_time <= end_time 
