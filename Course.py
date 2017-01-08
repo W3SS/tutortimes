@@ -58,6 +58,7 @@ class Course(object):
     def get_name():
         return self._name
 
+    
 class TutorEvent:
     
     def __init__(self, start_time, end_time, room, name):
