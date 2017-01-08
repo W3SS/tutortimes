@@ -80,7 +80,7 @@ class Student():
             # remove Student from that Course
             Course.remove_student(self)
             
-    def get_courses():
+    def get_courses(self):
         '''(None) -> list of Courses
         Returns the courses the Student is enrolled in as a list.
         
@@ -97,7 +97,52 @@ class Student():
         Returns all the Events (ie. office hours) for the specified Course.
         
         '''
+        event_list = Course.get_events()
         
-
-        
+        return event_list
     
+class Admin():
+    
+    def __init__(self, name):
+        
+        # list of Events this Admin has created
+        self._events = set()
+        
+        # list of Courses this Admin is part of
+        self._courses = set()
+        
+        # name of the Admin (that will appear on the timetable)
+        self._name = name
+
+    def get_courses(self):
+        '''(Admin) -> list of str
+        Returns list of all courses the Admin is part of.
+        
+        '''
+        course_list = self._courses
+        
+        return course_list
+    
+    def add_course_event(self, Course, start_time, end_time, room):
+        '''(Admin, Course, int, int, str) -> NoneType
+        Creates an Event for the specified course at the specified time. Start
+        time and end time are in milliseconds (Unix time).
+        '''
+        # name of Admin
+        name = self._name
+        
+        # create new Event object
+        New_Event = Event(start_time, end_time, room, name)
+        
+        # add the Event to the Course
+        Course.add_event(New_Event)
+        
+    def remove_course_event(self, Event):
+        '''(Admin, Event) -> NoneType
+        Deletes the Event (ie. cancelling an office hour).
+        
+        '''
+        
+        Course.remove_event()
+        
+        
