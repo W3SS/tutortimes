@@ -85,15 +85,10 @@ class Student:
 
     def get_courses(self):
         '''(None) -> list of Courses
-        Returns the courses the Student is enrolled in as a list.
+        Returns the courses the Student is enrolled in as a set.
 
         '''
-        course_list = []
-
-        for Course in self._courses:
-            course_list.append(Course)
-
-        return course_list
+        return self._courses
 
     def get_course(self, Course):
         '''(Student, Course) -> set of Events
@@ -162,13 +157,6 @@ class Admin:
             
         else:
             print("You are not an administrator for this course.")
-        
-
-        # create new Event object
-        New_Event = Event(start_time, end_time, room, name)
-
-        # add the Event to the Course
-        Course.add_event(New_Event)
 
     def remove_course_event(self, Event):
         '''(Admin, Event) -> NoneType
@@ -190,10 +178,16 @@ class Admin:
         else:
             print("You are not an administrator for this course.")
             
-    def edit_course_event(self, Event):
-        '''
-        Edit the time, name (the professor/TA who is holding the office hour), or
-        room of the Event.
+    def edit_course_event(self, Event, start_time, end_time, room):
+        '''(Admin, Event, int, int, str) -> NoneType
+        Change the time or room of an already existing Event.
         '''
         
-        Course.remove_event()
+        if start_time != Event._start:
+            Event.edit_start(start_time)
+            
+        if end_time != Event._end:
+            Event.edit_end(end_time)
+            
+        if room != Event._room:
+            Event.change_room(room)
