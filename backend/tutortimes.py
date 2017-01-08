@@ -1,5 +1,13 @@
 # imports
 from users import *
+from Course import *
+import random
+import string
+
+
+class NoCourseError(Exception):
+    """ An Error raised when no course is found"""
+    pass
 
 
 class TutorTimes:
@@ -11,7 +19,7 @@ class TutorTimes:
         """
         # create empty lists
         self._users = []
-        self._courses = []
+        self._course_code_to_course = {}
 
     def add_user(self, user):
         """ (TutorTimes, User) -> NoneType
@@ -42,8 +50,38 @@ class TutorTimes:
             if email == user.get_email():
                 return user
 
-    def add_course(self, course):
-        """(TutorTimes, Course) -> NoneType
-        Given a course, add it to the list of courses
+    def add_course(self, admin, name):
+        """(TutorTimes, Admin, str) -> NoneType
+        Given an admin and the name of the course, generate a auth code for the course, and add
+        it to the system.
         """
-        self._courses.append(course)
+        # create an 5 letter auth code for the course
+        course_code = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                            for _ in range(5))
+
+        # while the auth_code exists already in system
+        while course_code in self._course_code_to_course:
+
+            # generate a new auth code
+            course_code = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits)
+                                for _ in range(5))
+
+        # create the course object
+        new_course = Course(admin, self, name)
+
+        # add the course to the dict
+        self._course_code_to_course[course_code] = new_course
+
+    def get_course(self, course_code):
+        """(TutorTimes, str) -> Course
+        Given a course code, return the Course that correspond to the course code stored
+        in the system.
+        RAISES: NoCourseError when a course cannot be found in the dict
+        """
+        if course_code in self._course_code_to_course:
+            course = self._course_code_to_course[course_code]
+        else:
+            raise NoCourseError("There is no such course")
+
+        # return the course
+        return course

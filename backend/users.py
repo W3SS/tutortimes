@@ -33,7 +33,7 @@ class User:
     def check_password(self, password):
         """ (User, str) -> bool
         Given a password, check with the password hash of the user and see if
-        it matches
+        it matches.
         """
         return check_password_hash(self.pw_hash, password)
 
@@ -42,58 +42,61 @@ class User:
         Returns the email of the user
         """
         return self._email
-    
-    
-class Student():
+
+
+class Student:
+    """ A class for Student permissions for a user"""
     def __init__(self):
+        """ (Student) -> NoneType
         
+        """
         # set of courses that the Student is enrolled in, as Course objects 
-        self._courses = set([])
-        
+        self._courses = set()
+
     def enroll_course(self, Course):
         '''(Student, Course) -> NoneType
         Enrolls the student into the course specified.
-        
+
         '''
-        
+
         # if the Student is already enrolled in the course,
         # don't let them enroll again
         if Course not in self._courses:
-            
+
             # add course to Student's enrolled courses
             self._courses.update(Course)
-            
+
             # add Student into that Course
             Course.add_student(self)
-            
+
     def drop_course(self, Course):
         '''(Student, Course) -> NoneType
         Unenrolls the student from the course specified.
-        
+
         '''
         # Students can only drop courses they are enrolled in
         if Course in self._courses:
-            
+
             # remove the Course from Student's list of enrolled courses
             self._courses.remove(Course)
-            
+
             # remove Student from that Course
             Course.remove_student(self)
-            
+
     def get_courses(self):
         '''(None) -> list of Courses
         Returns the courses the Student is enrolled in as a list.
-        
+
         '''
         course_list = []
-        
+
         for Course in self._courses:
             course_list.append(Course)
-            
+
         return course_list
-    
+
     def get_course(self, Course):
-        '''(Student, Course) -> set of Events    
+        '''(Student, Course) -> set of Events
         Returns all the Events (ie. office hours) for the specified Course.
         
         '''
@@ -144,5 +147,3 @@ class Admin():
         '''
         
         Course.remove_event()
-        
-        
