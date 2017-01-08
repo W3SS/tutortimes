@@ -1,22 +1,28 @@
 <ion-view title="Add Tutor Time" id="page9">
-  <ion-content padding="true" class="has-header">
+  <ion-content padding="true" style="background: url(img/rqp4FtUT6ihXpinrvBmK_light_grey.png) no-repeat center;background-size:cover;" class="has-header">
     <div id="addTutorTime-button-bar1" class="button-bar"></div>
-    <form id="addTutorTime-form7" class="list">
-      <ion-toggle toggle-class="toggle-positive" id="addTutorTime-toggle2">Toggle</ion-toggle>
-      <ion-radio id="addTutorTime-radio3">Radio</ion-radio>
-      <label class="item item-input" id="addTutorTime-input13">
-        <span class="input-label">Input</span>
-        <input type="text" placeholder="">
+    <form id="addTutorTime-form11" class="list">
+      <label class="item item-input" id="addTutorTime-input18" name="nameofevent">
+        <span class="input-label">Name</span>
+        <input type="text" placeholder="Math Tutoring">
       </label>
+      <label class="item item-input" id="addTutorTime-input20" name="office">
+        <span class="input-label">Office</span>
+        <input type="text" placeholder="IC130">
+      </label>
+      <label class="item item-input" id="addTutorTime-input14" name="date">
+        <span class="input-label">Date</span>
+        <input type="date" placeholder="">
+      </label>
+      <label class="item item-input" id="addTutorTime-input10" name="rectimes">
+        <span class="input-label">Recurring Times</span>
+        <input type="number" placeholder="1">
+      </label>
+      <ion-checkbox id="addTutorTime-checkbox2" name="isrecur">Recurring?</ion-checkbox>
     </form>
-	
-	<ion-list>
-  <div class="item" ion-datetime-picker ng-model="datetimeValue">
-    {{datetimeValue| date: "yyyy-MM-dd H:mm:ss"}}
-  </div>
-    </ion-list>
+    <div id="addTutorTime-button-bar2" class="button-bar">
+      <button id="addTutorTime-button12" class="button button-light  button-block">Cancel</button>
+      <button id="addTutorTime-button14" class="button button-positive  button-block">OK</button>
+    </div>
   </ion-content>
 </ion-view>
-
-<script src="lib/ion-datetime-picker/release/ion-datetime-picker.min.js"></script>
-<link href="lib/ion-datetime-picker/release/ion-datetime-picker.min.css" rel="stylesheet">
