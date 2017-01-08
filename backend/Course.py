@@ -3,11 +3,11 @@ import time
 from users import *
 DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday']
 
-class Course:
+class Course(object):
     '''
     A class to represent a course including the students and timetable
     '''
-    def __init__(self, admin, tutor_times, name) -> None:
+    def __init__(self, admin, tutor_times, name):
 
         # create the private variables
         self._admins = set()
@@ -15,47 +15,47 @@ class Course:
         self._admins.add(admin)
         self._name = name
 
-        self._TutorEvents = set()
+        self._tutor_events = set()
         self._tutor_times = tutor_times
 
         # initialize
-        change_Event = Event()
-        time_Event = Event()
+        self._change_event = Event()
+        self._time_event = Event()
 
-        self._time_monitor = TimeMonitor(self,time_event)
-        self._change_monitor = Changemonitor(self,change_event)
+        self._time_monitor = TimeMonitor(self, self._time_event)
+        self._change_monitor = ChangeMonitor(self, self._change_event)
 
         # start the threads
         self._time_monitor.start()
         self._change_monitor.start()
 
-    def add_student(self,student):
+    def add_student(self, student) -> None:
         self._students.add(student)
 
-    def remove_student(self,student):
+    def remove_student(self, student) -> None:
         self._students.difference_update(set(student))
 
-    def add_admin(self,admin):
-        self._admins.add(student)
+    def add_admin(self, admin):
+        self._admins.add(admin)
 
-    def remove_admin(self,admin):
+    def remove_admin(self, admin):
         self._admins.difference_update(set(admin))
 
-    def add_TutorEvent(self,day,TutorEvent):
+    def add_TutorEvent(self, event):
         self._change_event.set()
-        self._TutorEvents.add(TutorEvent)
+        self._TutorEvents.add(event)
 
-    def remove_TutorEvent(self,day,TutorEvent):
-        self._TutorEvents.difference_update(set(TutorEvent))
+    def remove_TutorEvent(self, event):
+        self._TutorEvents.difference_update(set(event))
         self._change_event.set()
 
     def notify(self,message):
-        self._tutor_times.notify(students,message)
+        self._tutor_times.notify(self._students,message)
 
-    def get_TutorEvents():
-        return self._TutorEvents()
+    def get_TutorEvents(self):
+        return self._tutor_events
 
-    def get_name():
+    def get_name(self):
         return self._name
 
 
@@ -74,10 +74,10 @@ class TutorEvent:
     def get_room(self):
         return self._room
 
-    def edit_start(self,new_time):
+    def edit_start(self, new_time):
         self._start = new_time
 
-    def edit_end(self,new_time):
+    def edit_end(self, new_time):
         self._end = new_time
 
     def during_TutorEvent(self):
@@ -86,7 +86,7 @@ class TutorEvent:
         '''
         curr_time = int(round(time.time() * 1000))
         output = False
-        if(self._start <= curr_time <= end_time
+        if(self._start <= curr_time <= self._end
            and not self._currently_notified):
             output = True
             self._currently_notified = True
@@ -99,10 +99,9 @@ class TutorEvent:
 class TimeMonitor(Thread):
     '''
     monitors wether it currently is an
-
     '''
 
-    def __init__(self,course,event):
+    def __init__(self, course, event):
         Thread.__init__(self)
         self._course = course
         self._event = event

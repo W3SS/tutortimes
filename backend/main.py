@@ -11,12 +11,37 @@ app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 # create a tutortimes object
 server = tutortimes.TutorTimes()
 
+<<<<<<< Updated upstream
+=======
+# create a new admin
+root = Admin("Brian Harrington")
+
+# Testing code
+
+# create a new course in tutortimes
+course_code = server.add_course(root, "CSCA08 - Introduction to Computer Science")
+# get the course code
+print(course_code)
+
+
+# end testing code
+
+
+>>>>>>> Stashed changes
 @app.route("/")
 def home():
     """() -> str
     The main page for Tutor Times
     """
     return "Welcome to Tutor Times"
+
+
+@app.route("/api")
+def api():
+    """() -> str
+    API Page
+    """
+    return "Tutor Times API"
 
 
 @app.route("/api/register", methods=['POST'])
@@ -65,7 +90,6 @@ def login():
         # get the email in the field
         email = json_data['email']
 
-
         # get the password in the field
         password = json_data['password']
 
@@ -81,17 +105,17 @@ def login():
                 # Initiate a session for them
                 # initiate a session
                 session['email'] = email
-                status = "success"
+                status = True
 
             # If password does not match
             else:
-
-                # do something
-                status = "passwords do not match"
+                status = False
+                print("Passwords do not match")
 
         # CASE 2: User is not registered
         else:
-            status = "user does not exist in database"
+            status = False
+            print("User is not registered")
 
     # return json of result
     return jsonify({'result': status})
@@ -108,38 +132,57 @@ def notify():
 @app.route('/api/new_course', methods=['POST'])
 def new_course():
     """() -> json
-    Creates a new course.
+    Creates a new course iff user is logged in
     """
 
-    # get the course name from json
-    json_data = request.json
-    course_name = json_data['course_name']
+    # check if user is in session
+    if 'email' in session:
 
+<<<<<<< Updated upstream
     # get the admin that is creating the course
     admin = server.get_user(escape(session['email']))
+=======
+        # get the course name from json
+        json_data = request.json
+        course_name = json_data['course_name']
 
-    # create the course from the system, and get the course code
-    course_code = server.add_course(admin, course_name)
+        email_session = escape(session['email'])
+        print(email_session)
+>>>>>>> Stashed changes
 
-    print(jsonify({'course_code': course_code}))
+        # get the admin that is creating the course
+        admin_user = server.get_user(email_session)
+
+        # create a new admin object for that user
+        admin = Admin(admin_user.get_name())
+
+        # create the course from the system, and get the course code
+        course_code = server.add_course(admin, course_name)
+
+    else:
+        course_code = "ERROR"
 
     # return the json of the course code
     return jsonify({'course_code': course_code})
 
 
-@app.route('/api/course/<course_code>', methods=['POST', 'GET'])
-def view_course(course_code):
+@app.route('/api/course/<coursecode>', methods=['POST', 'GET'])
+def view_course(coursecode):
     """ (str) -> json
     Get all the details of a course with json
     """
     # load the course from the system
-    requested_course = server.get_course(course_code)
+    requested_course = server.get_course(coursecode)
 
-    # get the tutor events as a set
-    tutor_events = requested_course.get_TutorEvents()
+    # get the information of the course
+    course_name = requested_course.get_name()
+    tutor_events = list(requested_course.get_TutorEvents())
+    instructors = requested_course.get_admins()
 
     # return the tutor events as json
-    return jsonify({'events': tutor_events})
+    return jsonify({'name': course_name,
+                    'instructors': instructors,
+                    'events': tutor_events})
 
 
 @app.route('/api/logout')

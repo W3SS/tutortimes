@@ -118,6 +118,12 @@ class Admin:
         # name of the Admin (that will appear on the timetable)
         self._name = name
 
+    def __str__(self):
+        """ (Admin) -> str
+        Returns the name of the admin
+        """
+        return self._name
+
     def get_courses(self):
         '''(Admin) -> list of str
         Returns list of all courses the Admin is part of.
