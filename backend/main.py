@@ -11,8 +11,6 @@ app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 # create a tutortimes object
 server = tutortimes.TutorTimes()
 
-<<<<<<< Updated upstream
-=======
 # create a new admin
 root = Admin("Brian Harrington")
 
@@ -26,8 +24,6 @@ print(course_code)
 
 # end testing code
 
-
->>>>>>> Stashed changes
 @app.route("/")
 def home():
     """() -> str
@@ -138,17 +134,15 @@ def new_course():
     # check if user is in session
     if 'email' in session:
 
-<<<<<<< Updated upstream
-    # get the admin that is creating the course
-    admin = server.get_user(escape(session['email']))
-=======
+        # get the admin that is creating the course
+        admin = server.get_user(escape(session['email']))
+
         # get the course name from json
         json_data = request.json
         course_name = json_data['course_name']
 
         email_session = escape(session['email'])
         print(email_session)
->>>>>>> Stashed changes
 
         # get the admin that is creating the course
         admin_user = server.get_user(email_session)
