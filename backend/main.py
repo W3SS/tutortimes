@@ -1,5 +1,28 @@
+"""
+TutorTimes API
+
+/api/register
+Registers the user
+
+/api/login
+Login the user
+
+/api/logout
+Log out user
+
+/api/new_course
+Create a new course
+
+/api/course/<coursecode>/[join/drop/add_admin]
+Course related API calls
+
+/api/course/<coursecode>/schedule/[add_event/edit_event/del_event]
+Scheduling related API calls
+"""
+
+
 # imports
-from flask import Flask, request, session, redirect, url_for, escape, jsonify
+from flask import Flask, request, session, escape, jsonify
 from users import *
 import tutortimes
 
@@ -20,9 +43,6 @@ root = Admin("Brian Harrington")
 course_code = server.add_course(root, "CSCA08 - Introduction to Computer Science")
 # get the course code
 print(course_code)
-
-
-# end testing code
 
 @app.route("/")
 def home():
@@ -178,6 +198,69 @@ def view_course(coursecode):
                     'instructors': instructors,
                     'events': tutor_events})
 
+
+@app.route('/api/course/<coursecode>/join', methods=['POST', 'GET'])
+def join_course(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully joined the course.
+    REQ: user must be logged in
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
+
+
+@app.route('/api/course/<coursecode>/drop', methods=['POST', 'GET'])
+def drop_course(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully dropped the course.
+    REQ: user must be logged in
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
+
+
+@app.route('/api/course/<coursecode>/add_admin', methods=['POST', 'GET'])
+def add_course_admin(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully added a course admin.
+    REQ: user must be logged in
+    REQ: user must be admin of the course
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
+
+
+@app.route('/api/course/<coursecode>/schedule/add_event', methods=['POST', 'GET'])
+def add_course_event(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully added a course event.
+    REQ: user must be logged in
+    REQ: user must be admin of the course
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
+
+
+@app.route('/api/course/<coursecode>/schedule/edit_event', methods=['POST', 'GET'])
+def edit_course_event(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully edited a course event.
+    REQ: user must be logged in
+    REQ: user must be admin of the course
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
+
+
+@app.route('/api/course/<coursecode>/schedule/del_event', methods=['POST', 'GET'])
+def del_event(coursecode):
+    """ (str) -> json
+    Returns 'success' if user successfully deleted a course event.
+    REQ: user must be logged in
+    REQ: user must be admin of the course
+    """
+    # load the course from the system
+    requested_course = server.get_course(coursecode)
 
 @app.route('/api/logout')
 def logout():
