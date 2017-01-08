@@ -1,28 +1,23 @@
 <ion-view title="Add Tutor Time" id="page9">
-  <ion-content padding="true" style="background: url(img/rqp4FtUT6ihXpinrvBmK_light_grey.png) no-repeat center;background-size:cover;" class="has-header">
+  <ion-content padding="true" class="has-header">
     <div id="addTutorTime-button-bar1" class="button-bar"></div>
     <form id="addTutorTime-form11" class="list">
       <label class="item item-input" id="addTutorTime-input18" name="nameofevent">
         <span class="input-label">Name</span>
-        <input type="text" placeholder="Math Tutoring">
+        <input type="text" placeholder="">
       </label>
       <label class="item item-input" id="addTutorTime-input20" name="office">
         <span class="input-label">Office</span>
-        <input type="text" placeholder="IC130">
+        <input type="text" placeholder="">
       </label>
-      <label class="item item-input" id="addTutorTime-input14" name="date">
+      <label class="item item-input" id="addTutorTime-input14">
         <span class="input-label">Date</span>
         <input type="date" placeholder="">
       </label>
-      <label class="item item-input" id="addTutorTime-input10" name="rectimes">
-        <span class="input-label">Recurring Times</span>
-        <input type="number" placeholder="1">
-      </label>
-      <ion-checkbox id="addTutorTime-checkbox2" name="isrecur">Recurring?</ion-checkbox>
+      <ion-item class="range range-positive" id="addTutorTime-range1">Recurring Times
+        <input type="range" value="1" min="1" max="50" step="1" name="recurringtimes">
+      </ion-item>
+      <ion-checkbox id="addTutorTime-checkbox2">Recurring?</ion-checkbox>
     </form>
-    <div id="addTutorTime-button-bar2" class="button-bar">
-      <button id="addTutorTime-button12" class="button button-light  button-block">Cancel</button>
-      <button id="addTutorTime-button14" class="button button-positive  button-block">OK</button>
-    </div>
   </ion-content>
 </ion-view>

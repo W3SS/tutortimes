@@ -48,10 +48,14 @@ angular.module('app.routes', [])
     controller: 'signupCtrl'
   })
 
-  .state('addTutorTime', {
+  .state('tabsController.addTutorTime', {
     url: '/addtime',
-    templateUrl: 'templates/addTutorTime.html',
-    controller: 'addTutorTimeCtrl'
+    views: {
+      'tab1': {
+        templateUrl: 'templates/addTutorTime.html',
+        controller: 'addTutorTimeCtrl'
+      }
+    }
   })
 
 $urlRouterProvider.otherwise('/page5')
