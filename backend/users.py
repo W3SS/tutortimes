@@ -68,6 +68,9 @@ class Student:
 
             # add Student into that Course
             Course.add_student(self)
+            
+        else:
+            print("You are not enrolled in this course.")
 
     def drop_course(self, Course):
         '''(Student, Course) -> NoneType
@@ -77,11 +80,14 @@ class Student:
         # Students can only drop courses they are enrolled in
         if Course in self._courses:
 
-            # remove the Course from Student's list of enrolled courses
-            self._courses.remove(Course)
+            # remove the Course from Student's set of enrolled courses
+            self._courses.difference_update(Course)
 
             # remove Student from that Course
             Course.remove_student(self)
+            
+        else:
+            print("You are not enrolled in this course.")
 
     def get_courses(self):
         '''(None) -> list of Courses
@@ -126,24 +132,60 @@ class Admin():
         
         return course_list
     
+    def add_course_admin(self, Admin, Course):
+        '''(Admin, Admin, Course) -> NoneType
+        Adds a new Admin to a Course.
+        
+        '''
+        
+        Course.add_Admin()
+    
     def add_course_event(self, Course, start_time, end_time, room):
         '''(Admin, Course, int, int, str) -> NoneType
         Creates an Event for the specified course at the specified time. Start
         time and end time are in milliseconds (Unix time).
+        
         '''
         # name of Admin
         name = self._name
         
-        # create new Event object
-        New_Event = Event(start_time, end_time, room, name)
-        
-        # add the Event to the Course
-        Course.add_event(New_Event)
+        # the Admin can only add an Event to a Course they are managing
+        if name in Course._admins:
+            # create new Event object
+            New_Event = Event(start_time, end_time, room, name)
+            
+            # add Event to Admin object
+            self._events.update(Event)
+            
+            # add the Event to the Course
+            Course.add_TutorEvent(New_Event)
+            
+        else:
+            print("You are not an administrator for this course.")
         
     def remove_course_event(self, Event):
         '''(Admin, Event) -> NoneType
         Deletes the Event (ie. cancelling an office hour).
         
         '''
+        # name of Admin
+        name = self._name
         
-        Course.remove_event()
+        # Admin can only remove Events from Courses they are managing
+        if name in Course._admins:
+            
+            # remove Event from Admin object
+            self._events.difference_update(Event)
+            
+            # remove the Event from the Course
+            Course.remove_TutorEvent(Event)
+            
+        else:
+            print("You are not an administrator for this course.")
+            
+    def edit_course_event(self, Event):
+        '''
+        Edit the time, name (the professor/TA who is holding the office hour), or
+        room of the Event.
+        '''
+        
