@@ -74,6 +74,9 @@ class TutorEvent:
     def get_room(self):
         return self._room
 
+    def change_room(self, new_room):
+        self._room = room
+    
     def edit_start(self, new_time):
         self._start = new_time
 
@@ -123,7 +126,6 @@ class TimeMonitor(Thread):
             self._event.clear()
             self._event.wait(longest_wait/1000)
 
-
 class ChangeMonitor(Thread):
     '''
     monitors wether an update has been made to the TutorEvents
@@ -132,6 +134,7 @@ class ChangeMonitor(Thread):
         Thread.__init__(self)
         self._course = course
         self._event = event
+
     def run(self):
         message = 'An instructor has modified a course.'
         while True:
