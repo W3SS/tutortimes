@@ -138,8 +138,7 @@ class Admin:
         Adds a new Admin to a Course.
         
         '''
-        
-        Course.add_Admin()
+        Course.add_Admin(Admin)
     
     def add_course_event(self, Course, start_time, end_time, room):
         '''(Admin, Course, int, int, str) -> NoneType
