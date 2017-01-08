@@ -88,3 +88,7 @@ class TutorTimes:
 
         # return the course
         return course
+
+
+if __name__ == "__main__":
+    pass

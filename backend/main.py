@@ -11,6 +11,14 @@ app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 # create a tutortimes object
 server = tutortimes.TutorTimes()
 
+# create a new admin
+root = Admin("Brian Harrington")
+
+# Testing code
+# create a new course in tutortimes
+course_code = server.add_course(root, "CSCA08")
+print(course_code)
+
 @app.route("/")
 def home():
     """() -> str
@@ -115,8 +123,11 @@ def new_course():
     json_data = request.json
     course_name = json_data['course_name']
 
+    email_session = escape(session['email'])
+    print(email_session)
+
     # get the admin that is creating the course
-    admin = server.get_user(escape(session['email']))
+    admin = server.get_user(email_session)
 
     # create the course from the system, and get the course code
     course_code = server.add_course(admin, course_name)
