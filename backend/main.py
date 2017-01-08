@@ -31,7 +31,7 @@ import tutortimes
 app = Flask(__name__)
 app.secret_key = 'HACKVALLEY2017FDU*AUHFDAOIJDA^*&(.'
 
-# create a tutortimes object
+# create a TutorTimes object
 server = tutortimes.TutorTimes()
 
 # create a new admin
@@ -205,8 +205,10 @@ def join_course(coursecode):
     Returns 'success' if user successfully joined the course.
     REQ: user must be logged in
     """
-    # load the course from the system
-    requested_course = server.get_course(coursecode)
+    # check if user is logged in
+    if 'email' in session:
+        # load the course from the system
+        requested_course = server.get_course(coursecode)
 
 
 @app.route('/api/course/<coursecode>/drop', methods=['POST', 'GET'])
@@ -240,6 +242,21 @@ def add_course_event(coursecode):
     # load the course from the system
     requested_course = server.get_course(coursecode)
 
+    # get the user logged in
+    # user = session something
+
+    # create an admin object if they are the admin of  the course
+    # admin = Admin()
+
+    # get start time end time and room from json
+    json_data = request.json
+
+    start_time = json_data['start_time']
+    end_time = json_data['end_time']
+    room = json_data['room']
+
+    # admin.add_course_event(requested_course, start_time, end_time, room)
+
 
 @app.route('/api/course/<coursecode>/schedule/edit_event', methods=['POST', 'GET'])
 def edit_course_event(coursecode):
@@ -252,8 +269,10 @@ def edit_course_event(coursecode):
     requested_course = server.get_course(coursecode)
 
 
+
+
 @app.route('/api/course/<coursecode>/schedule/del_event', methods=['POST', 'GET'])
-def del_event(coursecode):
+def del_course_event(coursecode):
     """ (str) -> json
     Returns 'success' if user successfully deleted a course event.
     REQ: user must be logged in
