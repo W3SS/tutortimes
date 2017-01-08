@@ -2,3 +2,5 @@ curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -
 
 
 curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"email": "a@a.com", "password": "hello"}' http://localhost:5000/api/login
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ‘{"course_name": "TEST"}’ http://localhost:5000/api/new_course

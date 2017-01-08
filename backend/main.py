@@ -93,6 +93,7 @@ def login():
         else:
             status = "user does not exist in database"
 
+    # return json of result
     return jsonify({'result': status})
 
 
@@ -104,6 +105,42 @@ def notify():
     pass
 
 
+@app.route('/api/new_course', methods=['POST'])
+def new_course():
+    """() -> json
+    Creates a new course.
+    """
+
+    # get the course name from json
+    json_data = request.json
+    course_name = json_data['course_name']
+
+    # get the admin that is creating the course
+    admin = server.get_user(escape(session['email']))
+
+    # create the course from the system, and get the course code
+    course_code = server.add_course(admin, course_name)
+
+    print(jsonify({'course_code': course_code}))
+
+    # return the json of the course code
+    return jsonify({'course_code': course_code})
+
+
+@app.route('/api/course/<course_code>', methods=['POST', 'GET'])
+def view_course(course_code):
+    """ (str) -> json
+    Get all the details of a course with json
+    """
+    # load the course from the system
+    requested_course = server.get_course(course_code)
+
+    # get the tutor events as a set
+    tutor_events = requested_course.get_TutorEvents()
+
+    # return the tutor events as json
+    return jsonify({'events': tutor_events})
+
 
 @app.route('/api/logout')
 def logout():
@@ -111,6 +148,8 @@ def logout():
     Logs out the user and removes them from the session
     """
     session.pop('logged_in', None)
+
+    # return the json of the result
     return jsonify({'result': 'success'})
 
 

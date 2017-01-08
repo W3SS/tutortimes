@@ -1,23 +1,31 @@
 from threading import *
-DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday']
 import time
+from users import *
+DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday']
 
 class Course:
     '''
     A class to represent a course including the students and timetable
     '''
-    def __init__(self,admin,tutor_times,name):
+    def __init__(self, admin, tutor_times, name) -> None:
+
         # create the private variables
         self._admins = set()
         self._students = set()
         self._admins.add(admin)
         self._name = name
-        self._events = set()
-        self._tutor_times = tutor_times
-        self._last_event = None
 
-        self._time_monitor = TimeMonitor(self)
-        self._change_monitor = Changemonitor(self)
+        self._TutorEvents = set()
+        self._tutor_times = tutor_times
+
+        # initialize
+        change_Event = Event()
+        time_Event = Event()
+
+        self._time_monitor = TimeMonitor(self,time_event)
+        self._change_monitor = Changemonitor(self,change_event)
+
+        # start the threads
         self._time_monitor.start()
         self._change_monitor.start()
 
@@ -33,26 +41,25 @@ class Course:
     def remove_admin(self,admin):
         self._admins.difference_update(set(admin))
 
-    def add_event(self,day,event):
+    def add_TutorEvent(self,day,TutorEvent):
+        self._change_event.set()
+        self._TutorEvents.add(TutorEvent)
 
-        self._monitor.set()
-        self._events.add(event)
-
-    def remove_event(self,day,event):
-        self._events.difference_update(set(event))
-        self._last_event = event
-        self._monitor.set()
-
-    def last_event(self,event):
-        self._last_event = event
+    def remove_TutorEvent(self,day,TutorEvent):
+        self._TutorEvents.difference_update(set(TutorEvent))
+        self._change_event.set()
 
     def notify(self,message):
         self._tutor_times.notify(students,message)
 
-    def get_events():
-        return self._events()
+    def get_TutorEvents():
+        return self._TutorEvents()
 
-class Event:
+    def get_name():
+        return self._name
+
+
+class TutorEvent:
 
     def __init__(self, start_time, end_time, room, name):
         self._start = start_time
@@ -73,9 +80,9 @@ class Event:
     def edit_end(self,new_time):
         self._end = new_time
 
-    def during_event(self):
+    def during_TutorEvent(self):
         '''
-        checks wether the current time is in the middle of an event
+        checks wether the current time is in the middle of an TutorEvent
         '''
         curr_time = int(round(time.time() * 1000))
         output = False
@@ -90,39 +97,45 @@ class Event:
         return self._end - curr_time
 
 class TimeMonitor(Thread):
+    '''
+    monitors wether it currently is an
 
+    '''
 
-    def __init__(self,course):
+    def __init__(self,course,event):
         Thread.__init__(self)
         self._course = course
+        self._event = event
 
-    def run():
+    def run(self):
         while True:
             # 45 seconds in millis
             longest_wait = 45000
-            self.wait(longest_wait/1000)
+            self._event.wait(longest_wait/1000)
             message = 'There are office hours being held in:'
-            for event in self._course.get_events():
-                if(event.during_event()):
-                    message += event.get_room()
+            for TutorEvent in self._course.get_TutorEvents():
+                if(TutorEvent.during_TutorEvent()):
+                    message += TutorEvent.get_room()
                     message+= ','
-                    curr_length = event.time_left()
-                    # choose the longest wait to prevent spam
+                    curr_length = TutorEvent.time_left()
+                    # choose the longest wait to prTutorEvent spam
                     if(longest_wait < curr_length):
                         longest_wait = curr_length
-            self.wait(longest_wait/1000)
+            self._event.clear()
+            self._event.wait(longest_wait/1000)
 
 
 class ChangeMonitor(Thread):
     '''
-    monitors wether an update has been made to the events
+    monitors wether an update has been made to the TutorEvents
     '''
-    def __init__(self,course):
+    def __init__(self,course,event):
         Thread.__init__(self)
         self._course = course
-
-    def run():
+        self._event = event
+    def run(self):
         message = 'An instructor has modified a course.'
         while True:
-            self.wait()
+            self._event.wait()
             self._course.notify(message)
+            self._event.clear()
